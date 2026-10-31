@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>دفتر السوق | الإدارة الذكية المتطورة (سحابي)</title>
+<style>
+:root{
+  --bg:#070d18; --p:#0e1726; --p2:#142238; --line:#1e2f4a;
+  --txt:#f0f6fc; --muted:#8b9ebf; --g:#10b981; --g-glow:rgba(16, 185, 129, 0.15);
+  --b:#3b82f6; --r:#ef4444; --y:#f59e0b;
+  --radius:14px; --transition:all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:radial-gradient(circle at 90% 10%, #11223e 0, transparent 50%), var(--bg);
+  color:var(--txt); font:14px/1.5 system-ui, -apple-system, Tahoma, Arial, sans-serif;
+  letter-spacing: -0.2px;
+}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;border:0;border-radius:12px;padding:11px 16px;font-weight:600;transition:var(--transition);display:inline-flex;align-items:center;justify-content:center;gap:8px}
+button:active{transform:scale(0.97)}
+
+.app{min-height:100vh;display:grid;grid-template-columns:260px 1fr}
+.side{
+  position:sticky;top:0;height:100vh;background:rgba(7, 13, 24, 0.95);
+  backdrop-filter: blur(12px); border-left:1px solid var(--line);
+  padding:24px 16px;display:flex;flex-direction:column;z-index:100;
+}
+.brand{display:flex;align-items:center;gap:12px;padding:4px 8px 28px}
+.logo{
+  width:48px;height:48px;border-radius:16px;display:grid;place-items:center;
+  background:linear-gradient(135deg, var(--g), #047857);color:#fff;font-size:24px;font-weight:900;
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+}
+.brand h1{font-size:18px;margin:0 0 4px;font-weight:700}
+.brand small{color:var(--muted);font-size:11px}
+.navtitle{color:#5c76a1;font-size:11px;padding:8px 12px;text-transform:uppercase;font-weight:700;letter-spacing:0.5px}
+.nav{display:grid;gap:6px;margin-top:4px}
+.nav button{
+  background:transparent;color:#93c5fd;text-align:right;padding:12px 14px;
+  display:flex;gap:12px;align-items:center;border-radius:12px;font-size:13px;font-weight:500;
+  transition:var(--transition);width:100%;
+}
+.nav button:hover{background:rgba(59, 130, 246, 0.1);color:#fff;transform:translateX(-3px)}
+.nav button.active{
+  background:linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(59, 130, 246, 0.2));
+  color:#34d399;border:1px solid rgba(16, 185, 129, 0.4);box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+.sidefoot{margin-top:auto;font-size:11px;color:var(--muted);line-height:1.7;padding:12px;background:rgba(255,255,255,0.02);border-radius:12px;border:1px solid rgba(255,255,255,0.04)}
+
+main{padding:30px;max-width:1600px;width:100%;margin:auto;animation: fadeIn 0.4s ease-out}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:28px}
+.eyebrow{font-size:11px;color:var(--g);font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px}
+.top h2{margin:0;font-size:28px;font-weight:800;letter-spacing:-0.5px}
+.top p{margin:4px 0 0;color:var(--muted);font-size:13px}
+.datechip{padding:10px 16px;background:var(--p);border:1px solid var(--line);border-radius:12px;color:#cbd5e1;font-size:13px;font-weight:500;box-shadow:0 4px 12px rgba(0,0,0,0.1)}
+
+.page{display:none}
+.page.active{display:block;animation: fadeIn 0.35s ease-out}
+
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-bottom:20px}
+.stat,.panel{
+  background:linear-gradient(145deg, #111c32, #09101f);
+  border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  transition:var(--transition);
+}
+.stat:hover{border-color:rgba(59, 130, 246, 0.4);transform: translateY(-2px)}
+.stat{padding:20px}
+.stathead{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:12px;font-weight:600}
+.sicon{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,0.04);display:grid;place-items:center;font-size:18px;border:1px solid rgba(255,255,255,0.06)}
+.stat strong{display:block;font-size:24px;margin:12px 0 4px;font-weight:800}
+.stat small{font-size:11px;color:var(--muted)}
+
+.green{color:var(--g)}.red{color:var(--r)}.yellow{color:var(--y)}.blue{color:var(--b)}
+
+.panel{padding:24px;margin-bottom:20px}
+.ph{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
+.ph h3{margin:0;font-size:16px;font-weight:700}
+.sub{font-size:12px;color:var(--muted);margin-top:4px}
+
+.grid2{display:grid;grid-template-columns:1.2fr .8fr;gap:20px}
+.formgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.field{display:flex;flex-direction:column;gap:8px}
+.field label{font-size:12px;color:#cbd5e1;font-weight:600}
+.field input,.field select,.field textarea,.search{
+  width:100%;background:#050811;border:1px solid #1e2f4a;border-radius:12px;
+  padding:12px 14px;color:var(--txt);outline:none;transition:var(--transition);font-size:13px;
+}
+.field input:focus,.field select:focus,.search:focus{
+  border-color:var(--g);background:#080e1a;box-shadow:0 0 0 3px var(--g-glow)
+}
+.field textarea{min-height:80px;resize:vertical}
+
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.primary{background:var(--g);color:#022c22;box-shadow:0 4px 14px rgba(16,185,129,0.3)}
+.primary:hover{background:#059669;color:#fff}
+.secondary{background:#1e293b;color:#e2e8f0;border:1px solid rgba(255,255,255,0.05)}
+.secondary:hover{background:#334155;color:#fff}
+.danger{background:rgba(239,68,68,0.15);color:#fca5a5;border:1px solid rgba(239,68,68,0.3)}
+.danger:hover{background:var(--r);color:#fff}
+.sm{font-size:12px;padding:8px 12px;border-radius:9px}
+
+.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:12px;background:#060a13}
+table{width:100%;border-collapse:collapse;min-width:650px;font-size:13px}
+th,td{padding:13px 16px;text-align:right;border-bottom:1px solid #16243a;white-space:nowrap}
+th{background:#0d1626;color:#94a3b8;font-weight:600;font-size:12px;letter-spacing:0.3px}
+td{color:#e2e8f0}
+tr{transition:var(--transition)}
+tr:hover td{background:rgba(255,255,255,0.02)}
+tr:last-child td{border-bottom:0}
+.empty{text-align:center;color:var(--muted);padding:35px;font-size:13px}
+
+.searchrow{display:flex;gap:10px;margin-bottom:14px;align-items:center}
+.search{max-width:340px}
+.badge{display:inline-flex;align-items:center;gap:4px;background:rgba(16,185,129,0.1);color:#34d399;border-radius:8px;padding:5px 9px;font-size:11px;font-weight:600;border:1px solid rgba(16,185,129,0.2)}
+.badge.out{background:rgba(239,68,68,0.1);color:#f87171;border-color:rgba(239,68,68,0.2)}
+.badge.info{background:rgba(59,130,246,0.1);color:#60a5fa;border-color:rgba(59,130,246,0.2)}
+
+.note{border:1px solid rgba(245, 158, 11, 0.2);background:rgba(245, 158, 11, 0.05);color:#fcd34d;border-radius:var(--radius);padding:16px;font-size:12px;line-height:1.7;margin-bottom:20px}
+.balance{margin-top:16px;border:1px dashed #2a3f60;border-radius:12px;background:#050914;padding:14px 18px;display:flex;justify-content:space-between;align-items:center}
+.balance strong{color:var(--g);font-size:22px;font-weight:800}
+
+.quick{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.quick button{
+  background:#0f1a2c;border:1px solid var(--line);color:#f1f5f9;text-align:right;padding:18px;
+  display:block;border-radius:12px;transition:var(--transition);font-weight:600;
+}
+.quick button:hover{border-color:var(--g);background:#142238;transform: translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,0.3)}
+.quick span{display:block;color:var(--muted);font-size:11px;font-weight:normal;margin-top:6px}
+
+.toolbar{display:flex;gap:8px;flex-wrap:wrap}
+.hidden{display:none!important}
+.tiny{font-size:12px;color:var(--muted);line-height:1.7}
+.summaryline{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.pill{border:1px solid var(--line);background:#060b17;padding:9px 14px;border-radius:10px;font-size:12px;color:#cbd5e1;font-weight:500}
+.pill b{color:var(--txt);font-weight:700}
+
+/* Corporate Invoice Styles */
+.paper-invoice {
+  font-family: 'Times New Roman', Times, serif;
+  background: #fff;
+  color: #111;
+  padding: 35px;
+  border: 2px solid #2c3e50;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+.paper-header {
+  border-bottom: 3px double #2c3e50;
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+}
+.paper-header h1 {
+  font-size: 30px;
+  font-weight: 900;
+  color: #c0392b;
+  margin: 0;
+}
+.paper-header .phones {
+  font-size: 15px;
+  color: #333;
+  margin-top: 6px;
+  font-weight: bold;
+}
+.paper-header .address {
+  font-size: 13px;
+  color: #555;
+  margin-top: 4px;
+}
+.paper-meta {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  font-size: 15px;
+  font-weight: bold;
+}
+.required-from {
+  border-bottom: 1px dotted #111;
+  width: 70%;
+  display: inline-block;
+  padding: 2px 6px;
+}
+.paper-table-wrap {
+  border: 1px solid #bdc3c7;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 15px;
+}
+.paper-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.paper-table th, .paper-table td {
+  border: 1px solid #dcdde1;
+  padding: 10px 12px;
+  text-align: right;
+  color: #111 !important;
+}
+.paper-table th {
+  background: #2c3e50 !important;
+  color: #fff !important;
+  font-weight: bold;
+  font-size: 14px;
+}
+.fixed-cost-label {
+  width: 75%;
+  background: #f8f9fa;
+  font-weight: bold;
+}
+.fixed-cost-value {
+  width: 25%;
+  text-align: left;
+}
+.paper-totals-box {
+  background: #f1f2f6;
+  border: 2px solid #2c3e50;
+  border-radius: 8px;
+  padding: 15px;
+  margin-top: 20px;
+  font-size: 16px;
+  font-weight: bold;
+}
+.paper-totals-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.paper-totals-row.net {
+  border-top: 2px solid #2c3e50;
+  padding-top: 10px;
+  font-size: 22px;
+  color: #c0392b;
+}
+
+/* Notebook Page Statement Styles */
+.notebook-page {
+  font-family: 'Times New Roman', Times, serif;
+  background: #fff;
+  color: #111;
+  padding: 30px;
+  border: 3px double #991b1b;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+}
+.notebook-header {
+  border-bottom: 2px solid #991b1b;
+  padding-bottom: 12px;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.notebook-header h2 {
+  color: #991b1b;
+  margin: 0;
+  font-size: 26px;
+}
+.notebook-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 2px solid #991b1b;
+}
+.notebook-table th, .notebook-table td {
+  border: 1px solid #f87171;
+  padding: 8px 12px;
+  text-align: right;
+  color: #111 !important;
+}
+.notebook-table th {
+  background: #991b1b !important;
+  color: #fff !important;
+  font-size: 15px;
+}
+.notebook-table tr:nth-child(even) {
+  background: #fdf2f2;
+}
+
+/* Corporate Cash Table Styles */
+.corporate-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  background: #060a13;
+}
+.corporate-table th {
+  background: linear-gradient(135deg, #0e1726, #142238);
+  color: #38bdf8;
+  padding: 14px 16px;
+  font-weight: 700;
+  border-bottom: 2px solid var(--line);
+}
+.corporate-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #16243a;
+  color: #e2e8f0;
+}
+.corporate-table tr:hover td {
+  background: rgba(56, 189, 248, 0.04);
+}
+
+@media print{
+  body { background: #fff !important; color: #111 !important; }
+  .side, .top, .no-print, button, .actions, .searchrow, .nav, .sidefoot, .panel > .ph, .note { display: none !important; }
+  .app { display: block !important; }
+  .page { display: none !important; }
+  #expenses.page { display: block !important; }
+  main { padding: 0 !important; max-width: none !important; margin: 0 !important; }
+  #expenseForm > .panel, #expenseForm > .note { display: none !important; }
+  .paper-invoice {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+  }
+  .paper-table th { background: #2c3e50 !important; color: #fff !important; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+}
+
+@media(max-width:1000px){.stats{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}.formgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.app{display:block}.side{position:relative;height:auto;padding:14px;border:0;border-bottom:1px solid var(--line)}.brand{padding-bottom:12px}.sidefoot{display:none}.nav{grid-template-columns:repeat(3,1fr)}.nav button{font-size:10px;flex-direction:column;justify-content:center;text-align:center;padding:10px 4px;gap:4px}.navtitle{display:none}main{padding:16px}.top{align-items:flex-start;flex-direction:column}.top h2{font-size:24px}.formgrid{grid-template-columns:1fr}.stats{gap:10px}.stat{padding:14px}.stat strong{font-size:20px}.searchrow{flex-direction:column}.search{max-width:none}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="side">
+  <div class="brand">
+    <div class="logo">س</div>
+    <div><h1>دفتر السوق</h1><small>الإدارة الذكية المتطورة</small></div>
+  </div>
+  <div class="navtitle">القائمة الرئيسية</div>
+  <nav class="nav">
+    <button class="active" data-page="home">⌂ الرئيسية</button>
+    <button data-page="daily">📒 دفتر اليومية</button>
+    <button data-page="cash">💵 الصادر والوارد</button>
+    <button data-page="accounts">👥 الحسابات والعملاء</button>
+    <button data-page="expenses">🧾 الفواتير</button>
+    <button data-page="backup">🛡️ النسخ الاحتياطي</button>
+  </nav>
+  <div class="sidefoot">دفتر السوق — النسخة السحابية<br>بياناتك متزامنة لحظياً عبر الأجهزة</div>
+</aside>
+
+<main>
+  <header class="top">
+    <div>
+      <div class="eyebrow">نظام إدارة السوق المتطور (Firebase Cloud)</div>
+      <h2 id="title">الرئيسية</h2>
+      <p id="desc">ملخص شامل لحركة البضاعة، الخزنة، والمستحقات المالية.</p>
+    </div>
+    <div class="datechip" id="today"></div>
+  </header>
+
+  <section class="page active" id="home">
+    <div class="stats">
+      <div class="stat"><div class="stathead">رصيد الخزنة <span class="sicon">💰</span></div><strong id="cashBal">0 ج.م</strong><small>المقبوضات ناقص المدفوعات والمصروفات</small></div>
+      <div class="stat"><div class="stathead">مبيعات اليومية <span class="sicon">📈</span></div><strong id="sales">0 ج.م</strong><small>إجمالي حركات البيع المسجلة</small></div>
+      <div class="stat"><div class="stathead">مستحقات العملاء <span class="sicon">👥</span></div><strong id="receivables" class="yellow">0 ج.م</strong><small>إجمالي مجموع حسابات العملاء</small></div>
+      <div class="stat"><div class="stathead">مستحقات الموردين <span class="sicon">📦</span></div><strong id="payables" class="red">0 ج.م</strong><small>المتبقي لأصحاب البضاعة</small></div>
+    </div>
+    
+    <div class="panel">
+      <div class="ph"><h3>ملخص حركة الخزنة</h3><span class="sub">تتبع لحظي للسيولة النقدية والوارد والصادر</span></div>
+      <div class="summaryline" id="cashBreakdown"></div>
+    </div>
+
+    <div class="grid2">
+      <div class="panel">
+        <div class="ph"><div><h3>آخر الحركات المسجلة</h3><div class="sub">أحدث العمليات في النظام</div></div></div>
+        <div class="tablewrap"><table><thead><tr><th>التاريخ</th><th>الدفتر</th><th>البيان</th><th>المبلغ</th></tr></thead><tbody id="recent"></tbody></table></div>
+      </div>
+      <div class="panel">
+        <div class="ph"><div><h3>إجراءات سريعة</h3><div class="sub">اختصارات للعمليات الشائعة</div></div></div>
+        <div class="quick">
+          <button data-go="daily">＋ حركة بضاعة<span>تسجيل بيع أو توريد</span></button>
+          <button data-go="cash">⇄ حركة خزنة<span>قبض أو دفع نقدي</span></button>
+          <button data-go="accounts">♙ حساب جديد<span>إضافة عميل أو مورد</span></button>
+          <button data-go="expenses">🧾 فاتورة جديدة<span>تسجيل فاتورة جديدة</span></button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="note"><b>تنبيه نظامي:</b> الرصيد الموجب للعميل يعني أنه مدين لك بمبلغ، والرصيد الموجب للمورد يعني أنك مدين له. يتم تحديث الحسابات والخزنة آلياً عند حفظ الحركات.</div>
+  </section>
+
+  <section class="page" id="daily">
+    <div class="panel">
+      <div class="ph"><div><h3 id="dailyFormTitle">تسجيل حركة يومية جديدة</h3><div class="sub">ترك خانة الاسم فارغة يجعلها مبيعات نقدية عامة ولا تؤثر على حسابات العملاء</div></div></div>
+      <form id="dailyForm"><input type="hidden" name="id">
+        <div class="formgrid">
+          <div class="field"><label>التاريخ</label><input type="date" name="date" required></div>
+          <div class="field"><label>نوع الحركة</label><select name="kind" id="dailyKind"><option value="بيع">بيع لعميل (أو نقدي عام)</option><option value="توريد">توريد من مورد</option></select></div>
+          <div class="field"><label>العميل / المورد (اختياري)</label><input name="name" list="accountNames" placeholder="اتركه فارغاً للمبيعات النقدية البحتة"><datalist id="accountNames"></datalist></div>
+          <div class="field"><label>الصنف</label><input name="item" required placeholder="مثال: موز، تفاح، مانجا..."></div>
+          <div class="field"><label>العدد / القفص</label><input type="number" name="count" min="0" step=".01" value="0"></div>
+          <div class="field"><label>الوزن</label><input type="number" name="kg" min="0" step=".01" value="0"></div>
+          <div class="field"><label>سعر الكيلو (جنيه)</label><input type="number" name="price" min="0" step=".01" value="0"></div>
+          <div class="field"><label>البياعة لكل عدد (جنيه)</label><input type="number" name="fee" min="0" step=".01" value="0"></div>
+          <div class="field"><label>المدفوع الآن (جنيه)</label><input type="number" name="paid" min="0" step=".01" value="0"></div>
+          <div class="field"><label>ملاحظات البيان</label><input name="note" placeholder="اختياري"></div>
+        </div>
+        <div class="balance"><span>الإجمالي التقديري شامل البياعة</span><strong id="dailyPreview">0 ج.م</strong></div>
+        <div class="actions">
+          <button class="primary" type="submit" id="dailySubmit">حفظ الحركة</button>
+          <button class="secondary" type="button" id="dailyCancel">إلغاء التعديل</button>
+          <button class="secondary" type="reset">تفريغ الحقول</button>
+        </div>
+      </form>
+    </div>
+    
+    <div class="panel">
+      <div class="ph"><h3>سجل حركات اليومية</h3><div class="toolbar"><button class="secondary sm" id="dailyCSV">تصدير CSV</button></div></div>
+      <div class="searchrow">
+        <input class="search" id="dailySearch" placeholder="ابحث بالاسم، الصنف، أو البيان...">
+        <input class="search" type="date" id="dailyFrom" aria-label="من تاريخ">
+        <input class="search" type="date" id="dailyTo" aria-label="إلى تاريخ">
+        <button class="secondary sm" id="dailyFilterReset" type="button">مسح الفلتر</button>
+        <button class="secondary sm" id="printDaily" type="button">طباعة اليومية</button>
+      </div>
+      <div class="tablewrap">
+        <table><thead><tr><th>التاريخ</th><th>الاسم</th><th>الحركة</th><th>الصنف</th><th>العدد</th><th>الوزن</th><th>السعر</th><th>البياعة</th><th>الإجمالي</th><th>المدفوع</th><th>المتبقي</th><th>إجراءات</th></tr></thead><tbody id="dailyRows"></tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <section class="page" id="cash">
+    <div class="panel">
+      <div class="ph"><div><h3 id="cashFormTitle">تسجيل حركة الخزنة (وارد / صادر)</h3><div class="sub">وارد = فلوس اتدفعتلي وتخصم من حسابه | صادر = فلوس دفعتها وتضاف لحسابه</div></div></div>
+      <form id="cashForm"><input type="hidden" name="id">
+        <div class="formgrid">
+          <div class="field"><label>التاريخ</label><input type="date" name="date" required></div>
+          <div class="field"><label>نوع الحركة</label><select name="type" id="cashType"><option value="وارد">وارد</option><option value="صادر">صادر</option></select></div>
+          <div class="field"><label>اسم الشخص أو جهة الصرف (اختياري)</label><input name="name" list="accountNames" id="cashNameInput" placeholder="اكتب الاسم أو اتركه عاماً"></div>
+          <div class="field"><label>ربط بحساب</label><select name="accountId" id="cashAccount"><option value="">بدون ربط حساب</option></select></div>
+          <div class="field"><label>المبلغ (جنيه)</label><input type="number" name="amount" min=".01" step=".01" required></div>
+          <div class="field"><label>البيان / السبب</label><input name="note" placeholder="سبب القبض أو الصرف"></div>
+        </div>
+        <div class="actions">
+          <button class="primary" type="submit" id="cashSubmit">حفظ حركة الخزنة</button>
+          <button class="secondary" type="button" id="cashCancel">إلغاء التعديل</button>
+        </div>
+      </form>
+    </div>
+    
+    <div class="panel">
+      <div class="ph"><h3>سجل الصادر والوارد المالي</h3><div class="toolbar"><button class="secondary sm" id="cashCSV">تصدير CSV</button><button class="secondary sm" id="printCash" type="button">🖨️ طباعة السجل</button></div></div>
+      <div class="searchrow">
+        <input class="search" id="cashSearch" placeholder="ابحث بالاسم أو البيان...">
+      </div>
+      <div class="tablewrap">
+        <table class="corporate-table">
+          <thead>
+            <tr>
+              <th>التاريخ</th>
+              <th>النوع</th>
+              <th>الجهة / الاسم</th>
+              <th>الحساب المرتبط</th>
+              <th>البيان والتفاصيل</th>
+              <th>المبلغ</th>
+              <th class="no-print">إجراءات</th>
+            </tr>
+          </thead>
+          <tbody id="cashRows"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="page" id="accounts">
+    <div class="panel">
+      <div class="ph"><div><h3 id="accountFormTitle">إضافة حساب جديد</h3><div class="sub">تعريف العملاء والموردين وأرصدتهم الافتتاحية وصفحات الدفتر</div></div></div>
+      <form id="accountForm"><input type="hidden" name="id">
+        <div class="formgrid">
+          <div class="field"><label>اسم الحساب</label><input name="name" required placeholder="الاسم بالكامل"></div>
+          <div class="field"><label>نوع الحساب</label><select name="type"><option value="عميل">عميل</option><option value="مورد">صاحب بضاعة / مورد</option></select></div>
+          <div class="field"><label>الرصيد الافتتاحي</label><input type="number" name="opening" step=".01" value="0"></div>
+          <div class="field"><label>رقم الصفحة بالدفتر الورقي</label><input name="page" placeholder="مثال: 99"></div>
+          <div class="field"><label>ملاحظات / البلد</label><input name="note" placeholder="مثال: المنصورة / ملاحظات"></div>
+        </div>
+        <div class="actions">
+          <button class="primary" type="submit" id="accountSubmit">إضافة الحساب</button>
+          <button class="secondary" type="button" id="accountCancel">إلغاء التعديل</button>
+        </div>
+      </form>
+    </div>
+    
+    <div class="panel">
+      <div class="ph"><h3>حسابات العملاء والموردين</h3><div class="toolbar"><button class="secondary sm" id="accountCSV">تصدير CSV</button><button class="secondary sm" id="printAccounts">طباعة الحسابات</button></div></div>
+      <div class="searchrow"><input class="search" id="accountSearch" placeholder="ابحث عن اسم حساب..."></div>
+      <div class="tablewrap">
+        <table><thead><tr><th>الاسم</th><th>النوع</th><th>الصفحة</th><th>الافتتاحي</th><th>الرصيد الحالي</th><th>ملاحظات</th><th>إجراءات</th></tr></thead><tbody id="accountRows"></tbody></table>
+      </div>
+      <div class="tiny" style="margin-top:12px;">اضغط على زر «صفحة الحساب» لعرض سجل العمليات بنظام صفحة الدفتر الورقي، أو «تعديل الصفحة» لتغيير رقم الصفحة مباشرة.</div>
+    </div>
+
+    <!-- Notebook Page Statement Panel -->
+    <div class="panel hidden" id="statementPanel">
+      <div class="ph"><h3>صفحة حساب العميل (سجل الدفتر الورقي)</h3><div class="toolbar"><button class="primary sm" id="printStatement">🖨️ طباعة صفحة الدفتر</button><button class="secondary sm" id="closeStatement">إغلاق الصفحة</button></div></div>
+      
+      <div class="notebook-page" id="notebookPrintArea">
+        <div class="notebook-header">
+          <div>
+            <h2 id="nbName">الاسم: خميس بلايكة</h2>
+            <div style="font-size:14px; margin-top:4px; color:#555;" id="nbMeta">البلد: البهنصة | ص 99</div>
+          </div>
+          <div style="text-align: left; font-size: 14px;">
+            <div>تاريخ الإصدار: <span id="nbDate">2026-10-31</span></div>
+            <div>الرصيد الحالي: <strong id="nbBalance" style="color:#991b1b;">0.00 ج.م</strong></div>
+          </div>
+        </div>
+
+        <div style="overflow-x:auto;">
+          <table class="notebook-table">
+            <thead>
+              <tr>
+                <th style="width:15%;">التاريخ</th>
+                <th style="width:35%;">البـيـان</th>
+                <th style="width:12%;">العـدد</th>
+                <th style="width:13%;">المبلغ (جنيه)</th>
+                <th style="width:25%;">ملاحظات الحركة</th>
+              </tr>
+            </thead>
+            <tbody id="notebookRows"></tbody>
+          </table>
+        </div>
+        <div style="margin-top: 15px; font-size: 12px; color: #666; text-align: center;">
+          دفتر السوق الإلكتروني — مطابق لدفتر الحسابات اليدوي بدقة عالية
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="ph"><h3>تسوية وتعديل يدوي للرصيد</h3></div>
+      <form id="adjustForm">
+        <div class="formgrid">
+          <div class="field"><label>الحساب</label><select name="accountId" id="adjustAccount" required></select></div>
+          <div class="field"><label>نوع التسوية</label><select name="direction"><option value="add">إضافة على الرصيد المستحق</option><option value="subtract">خصم من الرصيد المستحق</option></select></div>
+          <div class="field"><label>المبلغ (جنيه)</label><input type="number" name="amount" min=".01" step=".01" required></div>
+          <div class="field"><label>التاريخ</label><input type="date" name="date" required></div>
+          <div class="field"><label>سبب التسوية</label><input name="note" required placeholder="سبب التعديل اليدوي"></div>
+        </div>
+        <div class="actions"><button class="primary" type="submit">حفظ التسوية</button></div>
+      </form>
+      <div class="tiny" style="margin-top:10px;">التسوية تغيّر رصيد الحساب فقط دون التأثير على الخزنة المباشرة.</div>
+    </div>
+  </section>
+
+  <section class="page" id="expenses">
+    <div class="panel">
+      <div class="ph"><div><h3 id="expenseFormTitle">تسجيل فاتورة جديدة</h3><div class="sub">تسجيل بنود الفاتورة وحساب الإجمالي الصافي بتصميم الشركات العصري</div></div></div>
+      <form id="expenseForm"><input type="hidden" name="id">
+        
+        <!-- Paper Invoice Wrapper -->
+        <div class="paper-invoice">
+          <div class="paper-header">
+            <h1 style="float:left;">ثلاجة موز مجد الإسلام</h1>
+            <div style="clear:both; margin-top:5px; color:#c0392b; font-size: 20px; font-weight:bold;">الشيخ/ أحمد رمضان وأولاده</div>
+            <div class="phones">ش أحمد رمضان 01098485186 / 01221936909 — أ/رمضان 01226788531 / أ/محمد 01279895790</div>
+            <div class="address">شارع الوكالة الأول نزله كوبرى المشاه بعد مسجد عابر سبيل</div>
+          </div>
+          <div class="paper-meta">
+            <div>تحرير في: <input type="date" id="invoiceDate" style="background:#fff; border:1px solid #999; padding:2px; border-radius:4px;"></div>
+            <div>المطلوب من : <input name="name" list="accountNames" class="required-from" style="background:#fff; border:1px solid #999; padding:2px; border-radius:4px;" required></div>
+          </div>
+          <div class="paper-table-wrap">
+            <table class="paper-table">
+              <thead>
+                <tr>
+                  <th>الصـنـف</th>
+                  <th>ســعـر</th>
+                  <th>الوزن</th>
+                  <th>عــدد</th>
+                  <th>جـنـيــه</th>
+                  <th class="no-print" style="width:50px;">إزالة</th>
+                </tr>
+              </thead>
+              <tbody id="invoiceItems"></tbody>
+              <tfoot>
+                <tr style="background:#f1f2f6; font-weight:bold;">
+                  <td>إجمالي</td>
+                  <td>—</td>
+                  <td id="sumKg">0.00</td>
+                  <td id="sumCount">0.00</td>
+                  <td id="sumSubtotal">0.00 ج.م</td>
+                  <td class="no-print"></td>
+                </tr>
+              </tfoot>
+            </table>
+            <div class="no-print" style="padding: 10px; background: #f8f9fa; text-align: center;">
+              <button type="button" class="secondary sm" id="addRowBtn" style="background:#3b82f6; color:#fff;">＋ إضافة صنف جديد</button>
+            </div>
+
+            <table class="paper-table" style="margin-top:10px;">
+              <tbody>
+                <tr><td class="fixed-cost-label">عـمـولـة</td><td class="fixed-cost-value"><input type="number" id="cost_commission" step=".01" style="width:100%; border:none; background:transparent; font-weight:bold;" value="0"></td></tr>
+                <tr><td class="fixed-cost-label">تـنـزيـل</td><td class="fixed-cost-value"><input type="number" id="cost_unloading" step=".01" style="width:100%; border:none; background:transparent; font-weight:bold;" value="0"></td></tr>
+                <tr><td class="fixed-cost-label">ثـلاجـة</td><td class="fixed-cost-value"><input type="number" id="cost_fridge" step=".01" style="width:100%; border:none; background:transparent; font-weight:bold;" value="0"></td></tr>
+                <tr><td class="fixed-cost-label">نـولـون</td><td class="fixed-cost-value"><input type="number" id="cost_transport" step=".01" style="width:100%; border:none; background:transparent; font-weight:bold;" value="0"></td></tr>
+                <tr><td class="fixed-cost-label">مصـروف</td><td class="fixed-cost-value"><input type="number" id="cost_expense" step=".01" style="width:100%; border:none; background:transparent; font-weight:bold;" value="0"></td></tr>
+                <tr><td class="fixed-cost-label">نـقـابـة</td><td class="fixed-cost-value"><input type="number" id="cost_union" step=".01" style="width:100%; border:none; background:transparent; font-weight:bold;" value="0"></td></tr>
+                <tr style="background:#e9ecef; font-weight:bold;">
+                  <td>Expense</td>
+                  <td id="sumExpenses" style="text-align: left; color:#c0392b;">0.00 ج.م</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Totals Box -->
+          <div class="paper-totals-box">
+            <div class="paper-totals-row">
+              <span>Total:</span>
+              <span id="displaySubtotal">0.00 ج.م</span>
+            </div>
+            <div class="paper-totals-row">
+              <span>Expense:</span>
+              <span id="displayExpenses">0.00 ج.م</span>
+            </div>
+            <div class="paper-totals-row net">
+              <span>المبلغ الصافي للفاتورة:</span>
+              <span id="displayNetTotal">0.00 ج.م</span>
+            </div>
+          </div>
+          
+        </div>
+        <div class="note" style="margin-top: 20px;">الفاتورة لا تلقى شيك أو إيصالات - الدمغة على طالب الفاتورة - ماعدا السهو والخطأ</div>
+        <div class="actions">
+          <button class="primary" type="submit" id="expenseSubmit">حفظ الفاتورة</button>
+          <button class="secondary" type="button" id="expenseCancel">إلغاء التعديل</button>
+          <button class="secondary sm" id="printInvoiceBtn" type="button" style="background:#2563eb; color:#fff;">🖨️ طباعة الفاتورة</button>
+        </div>
+      </form>
+    </div>
+    
+    <div class="panel">
+      <div class="ph"><h3>سجل الفواتير المسجلة</h3><button class="secondary sm" id="expenseCSV">تصدير CSV</button></div>
+      <div class="tablewrap">
+        <table><thead><tr><th>التاريخ</th><th>الاسم</th><th>البيان</th><th>الإجمالي الصافي</th><th>إجراءات</th></tr></thead><tbody id="expenseRows"></tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <section class="page" id="backup">
+    <div class="panel">
+      <div class="ph"><div><h3>النسخ الاحتياطي السحابي ومزامنة الأجهزة</h3><div class="sub">بياناتك الآن مرتبطة بقاعدة بيانات سحابية وتظهر لحظياً على كل أجهزتك</div></div></div>
+      
+      <!-- Password Control Box -->
+      <div class="note" style="border-color:var(--b); background:rgba(59,130,246,0.08); color:#93c5fd;">
+        <div style="font-weight:bold; margin-bottom:8px;">🔒 حماية خيارات الحذف والتعديل بكلمة مرور:</div>
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+          <span>حالة القفل: <strong id="lockStatus" style="color:var(--y);">غير مفعل</strong></span>
+          <button class="secondary sm" id="toggleLockBtn" style="background:var(--b); color:#fff;">تفعيل / إلغاء القفل</button>
+          <span class="tiny">كلمة المرور الافتتاحية (1234)</span>
+        </div>
+      </div>
+
+      <div class="note">قاعدة البيانات سحابية ومتصلة بـ Firebase بنجاح. يمكنك أيضاً تصدير نسخة احتياطية محلية بصيغة JSON متى أردت.</div>
+      <div class="actions">
+        <button class="primary" id="backupExport">تنزيل نسخة احتياطية (JSON)</button>
+        <label class="secondary" style="display:inline-flex;align-items:center;cursor:pointer">استعادة نسخة احتياطية<input type="file" id="backupImport" accept=".json,application/json" hidden></label>
+        <button class="danger" id="clearAll">مسح كافة البيانات السحابية</button>
+      </div>
+      <p class="tiny" style="margin-top:14px;">ملاحظة: التعديلات تظهر فوراً على أي هاتف أو كمبيوتر يفتح نفس الرابط.</p>
+    </div>
+    <div class="panel">
+      <h3>ملخص السجلات المخزنة بالسحابة</h3>
+      <div class="summaryline" id="recordCounts"></div>
+    </div>
+  </section>
+</main>
+</div>
+
+<!-- Firebase SDKs & App Logic -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-analytics.js";
+  import { getFirestore, collection, getDocs, addDoc, setDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-firestore.js";
+
+  // مفاتيح مشروعك الخاصة التي نسختها من Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyAJte1se7vPs0F6pfOqzOMVYt7Js7nswBQ",
+    authDomain: "daftar-f73fe.firebaseapp.com",
+    projectId: "daftar-f73fe",
+    storageBucket: "daftar-f73fe.firebasestorage.app",
+    messagingSenderId: "702925346734",
+    appId: "1:702925346734:web:b7226046c3de31343cda3f",
+    measurementId: "G-2CJSV3D1H6"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  const dbFire = getFirestore(app);
+
+  const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+  const LOCK_KEY='souqDaftar_locked';
+  
+  let db={daily:[],cash:[],accounts:[],expenses:[],adjustments:[]};
+
+  // دالة لجلب البيانات من Firestore وتحديث واجهة البرنامج
+  async function loadCloudData(){
+    try {
+      const collections = ['daily', 'cash', 'accounts', 'expenses', 'adjustments'];
+      for(let col of collections){
+        const querySnapshot = await getDocs(collection(dbFire, col));
+        db[col] = [];
+        querySnapshot.forEach((docSnap) => {
+          db[col].push({ id: docSnap.id, ...docSnap.data() });
+        });
+      }
+      render();
+    } catch(err) {
+      console.error("خطأ في جلب البيانات من السحابة: ", err);
+    }
+  }
+
+  // دالة لحفظ أو تحديث مستند في Firestore
+  async function saveCloudRecord(colName, record){
+    try {
+      const idToUse = record.id ? String(record.id) : (Date.now().toString(36)+Math.random().toString(36).slice(2,7));
+      record.id = idToUse;
+      await setDoc(doc(dbFire, colName, idToUse), record);
+      await loadCloudData();
+    } catch(err) {
+      console.error("خطأ في حفظ البيانات بالسحابة: ", err);
+      alert("حدث خطأ أثناء الحفظ بالسحابة، تحقق من الاتصال بالإنترنت.");
+    }
+  }
+
+  // دالة لحذف مستند من Firestore
+  async function deleteCloudRecord(colName, recordId){
+    try {
+      await deleteDoc(doc(dbFire, colName, String(recordId)));
+      await loadCloudData();
+    } catch(err) {
+      console.error("خطأ في الحذف من السحابة: ", err);
+    }
+  }
+
+  let isLocked = localStorage.getItem(LOCK_KEY) === 'true';
+
+  function updateLockUI(){
+    const statusEl = $('#lockStatus');
+    const btn = $('#toggleLockBtn');
+    if(!statusEl || !btn) return;
+    if(isLocked){
+      statusEl.textContent = 'مفعل (محمي)';
+      statusEl.style.color = '#34d399';
+      btn.textContent = 'إيقاف قفل الحماية';
+    } else {
+      statusEl.textContent = 'غير مفعل';
+      statusEl.style.color = '#f59e0b';
+      btn.textContent = 'تفعيل قفل الحماية';
+    }
+  }
+
+  if($('#toggleLockBtn')){
+    $('#toggleLockBtn').onclick = () => {
+      if(!isLocked){
+        const pass = prompt('أدخل كلمة المرور الجديدة لتفعيل الحماية (افتراضي: 1234):', '1234');
+        if(pass === null) return;
+        localStorage.setItem('souq_pass', pass || '1234');
+        isLocked = true;
+        localStorage.setItem(LOCK_KEY, 'true');
+        alert('تم تفعيل الحماية بنجاح.');
+      } else {
+        const pass = prompt('أدخل كلمة المرور الحالية لإلغاء القفل:');
+        const savedPass = localStorage.getItem('souq_pass') || '1234';
+        if(pass === savedPass){
+          isLocked = false;
+          localStorage.setItem(LOCK_KEY, 'false');
+          alert('تم إلغاء قفل الحماية بنجاح.');
+        } else {
+          alert('كلمة المرور غير صحيحة!');
+        }
+      }
+      updateLockUI();
+    };
+  }
+
+  function verifyLock(){
+    if(!isLocked) return true;
+    const pass = prompt('هذا الإجراء محمي. أدخل كلمة المرور للمتابعة:');
+    const savedPass = localStorage.getItem('souq_pass') || '1234';
+    if(pass === savedPass) return true;
+    alert('كلمة المرور خاطئة! تم إلغاء العملية.');
+    return false;
+  }
+
+  const meta={
+    home:['الرئيسية','ملخص شامل لحركة البضاعة، الخزنة، والمستحقات المالية (سحابي).'],
+    daily:['دفتر اليومية','تسجيل ومراجعة حركات البيع والتوريد اليومية.'],
+    cash:['الصادر والوارد','متابعة حركة الصادر والوارد المالي وتحديث الحسابات.'],
+    accounts:['الحسابات والعملاء','إدارة حسابات العملاء والموردين وصفحات الدفتر.'],
+    expenses:['الفواتير','تسجيل بنود الفاتورة وحساب الإجمالي الصافي.'],
+    backup:['النسخ الاحتياطي','مزامنة السحابة وحماية الدفتر بكلمة مرور.']
+  };
+
+  function go(p){
+    $$('.page').forEach(x=>x.classList.toggle('active',x.id===p));
+    $$('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.page===p));
+    if(meta[p]){
+      $('#title').textContent=meta[p][0];
+      $('#desc').textContent=meta[p][1];
+    }
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  $$('.nav button').forEach(b=>b.onclick=()=>go(b.dataset.page));
+  $$('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
+
+  const today=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
+  const genId=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7), n=x=>Number(x)||0;
+  const money=x=>n(x).toLocaleString('ar-EG',{maximumFractionDigits:2})+' ج.م';
+  const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  function setDates(){
+    document.querySelectorAll('input[type=date]').forEach(x=>{if(!x.value)x.value=today()});
+    if($('#invoiceDate')) $('#invoiceDate').value = today();
+    if($('#today')) $('#today').textContent=new Date().toLocaleDateString('ar-EG',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  }
+
+  const totalDaily=(x)=>n(x.kg)*n(x.price)+n(x.count)*n(x.fee);
+  const accountById=(aid)=>db.accounts.find(a=>a.id===aid);
+  const findAccount=(name,type)=>db.accounts.find(a=>a.name.trim().toLowerCase()===String(name).trim().toLowerCase()&&(!type||a.type===type));
+  
+  async function ensureAccount(name,type){
+    if(!name || !name.trim()) return null;
+    let a=findAccount(name,type);
+    if(!a){
+      a={id:genId(),name:name.trim(),type:type||'عميل',opening:0,page:'',note:'تم الإنشاء تلقائياً'};
+      db.accounts.push(a);
+      await saveCloudRecord('accounts', a);
+    }
+    return a;
+  }
+
+  function movements(aid){
+    const a=accountById(aid);if(!a)return[];let m=[];
+    db.daily.filter(x=>x.accountId===aid).forEach(x=>{
+      const t=totalDaily(x),paid=n(x.paid);
+      if(a.type==='عميل'&&x.kind==='بيع'){m.push({date:x.date,label:'بيع '+x.item,add:t,sub:0,count:x.count,note:x.note});if(paid)m.push({date:x.date,label:'مدفوع مع البيع',add:0,sub:paid,count:0,note:'سداد نقدي'})}
+      if(a.type==='مورد'&&x.kind==='توريد'){m.push({date:x.date,label:'توريد '+x.item,add:t,sub:0,count:x.count,note:x.note});if(paid)m.push({date:x.date,label:'سداد مع التوريد',add:0,sub:paid,count:0,note:'سداد نقدي'})}
+    });
+    db.cash.filter(x=>x.accountId===aid).forEach(x=>{
+      if(x.type==='وارد')m.push({date:x.date,label:'وارد (قبض): '+(x.note||x.name),add:0,sub:n(x.amount),count:0,note:x.note});
+      if(x.type==='صادر')m.push({date:x.date,label:'صادر (سحب للعميل): '+(x.note||x.name),add:n(x.amount),sub:0,count:0,note:x.note});
+    });
+    db.expenses.filter(x=>x.name && x.name.trim().toLowerCase()===a.name.trim().toLowerCase()).forEach(x=>{
+      m.push({date:x.date,label:'فاتورة مبيعات',add:n(x.amount),sub:0,count:0,note:x.note});
+    });
+    db.adjustments.filter(x=>x.accountId===aid).forEach(x=>m.push({date:x.date,label:'تسوية يدويّة',add:x.direction==='add'?n(x.amount):0,sub:x.direction==='subtract'?n(x.amount):0,count:0,note:x.note}));
+    return m.sort((x,y)=>x.date.localeCompare(y.date));
+  }
+
+  function balance(a){return n(a.opening)+movements(a.id).reduce((s,m)=>s+n(m.add)-n(m.sub),0)}
+  function cashBalance(){let val=0;db.daily.forEach(x=>{if(x.kind==='بيع')val+=n(x.paid);else val-=n(x.paid)});db.cash.forEach(x=>val+=(x.type==='وارد'?1:-1)*n(x.amount));db.expenses.forEach(x=>val-=n(x.amount));return val}
+
+  function setOptions(){
+    const opts=db.accounts.map(a=>`<option value="${a.id}">${esc(a.name)} — ${esc(a.type)}</option>`).join('');
+    if($('#accountNames')) $('#accountNames').innerHTML=db.accounts.map(a=>`<option value="${esc(a.name)}">`).join('');
+    if($('#cashAccount')) $('#cashAccount').innerHTML='<option value="">بدون ربط حساب</option>'+opts;
+    if($('#adjustAccount')) $('#adjustAccount').innerHTML=opts;
+  }
+
+  window.buttons=(type,x)=>{
+    return `<button class="secondary sm" onclick="editRecord('${type}','${x.id}')">تعديل</button> <button class="danger sm" onclick="deleteRecord('${type}','${x.id}')">حذف</button>`;
+  };
+
+  window.editRecord=(type,rid)=>{
+    if(!verifyLock()) return;
+    const x=db[type].find(y=>y.id===rid);if(!x)return;
+    if(type==='daily'){go('daily');fillForm($('#dailyForm'),x);$('#dailyFormTitle').textContent='تعديل حركة يومية';$('#dailySubmit').textContent='حفظ التعديل';previewDaily()}
+    else if(type==='cash'){go('cash');fillForm($('#cashForm'),x);$('#cashFormTitle').textContent='تعديل حركة الخزنة';$('#cashSubmit').textContent='حفظ التعديل'}
+    else if(type==='accounts'){go('accounts');fillForm($('#accountForm'),x);$('#accountFormTitle').textContent='تعديل حساب';$('#accountSubmit').textContent='حفظ التعديل'}
+    else if(type==='expenses'){
+      go('expenses');
+      $('#expenseForm').elements.id.value = x.id;
+      $('#expenseForm').elements.name.value = x.name;
+      if(x.date) $('#invoiceDate').value = x.date;
+      if(x.costs){
+        $('#cost_commission').value = x.costs.commission || 0;
+        $('#cost_unloading').value = x.costs.unloading || 0;
+        $('#cost_fridge').value = x.costs.fridge || 0;
+        $('#cost_transport').value = x.costs.transport || 0;
+        $('#cost_expense').value = x.costs.expense || 0;
+        $('#cost_union').value = x.costs.union || 0;
+      }
+      const tbody = $('#invoiceItems');
+      tbody.innerHTML = '';
+      if(x.items && x.items.length > 0){
+        x.items.forEach(it => addInvoiceRow(it));
+      } else {
+        addInvoiceRow();
+      }
+      calculateInvoice();
+      $('#expenseFormTitle').textContent='تعديل الفاتورة';
+      $('#expenseSubmit').textContent='حفظ التعديل';
+    }
+  };
+
+  function fillForm(form,obj){Object.keys(obj).forEach(k=>{if(form.elements[k])form.elements[k].value=obj[k]??''})}
+
+  window.deleteRecord=async(type,rid)=>{
+    if(!verifyLock()) return;
+    if(type==='accounts'&&(db.daily.some(x=>x.accountId===rid)||db.cash.some(x=>x.accountId===rid)||db.adjustments.some(x=>x.accountId===rid))){
+      if(!confirm('الحساب مرتبط بحركات سابقة. حذفه سيترك الحركات بدون ربط. هل تريد الاستمرار؟'))return;
+    }else if(!confirm('هل أنت متأكد من حذف السجل نهائياً من السحابة؟'))return;
+    
+    await deleteCloudRecord(type, rid);
+  };
+
+  window.updatePageNum = async (aid) => {
+    if(!verifyLock()) return;
+    const a = accountById(aid);
+    if(!a) return;
+    const newPage = prompt('أدخل رقم الصفحة الجديدة بالدفتر الورقي:', a.page || '');
+    if(newPage !== null){
+      a.page = newPage.trim();
+      await saveCloudRecord('accounts', a);
+      alert('تم تحديث رقم الصفحة بنجاح');
+    }
+  };
+
+  function resetForm(form,title,submit){
+    form.reset();
+    form.elements.id.value='';
+    if(title)$(title[0]).textContent=title[1];
+    if(submit)$(submit[0]).textContent=submit[1];
+    setDates();
+  }
+
+  function previewDaily(){
+    const f=Object.fromEntries(new FormData($('#dailyForm')).entries());
+    if($('#dailyPreview')) $('#dailyPreview').textContent=money(totalDaily(f));
+  }
+  
+  if($('#dailyForm')){
+    $('#dailyForm').addEventListener('input',previewDaily);
+    $('#dailyForm').addEventListener('change',previewDaily);
+    $('#dailyForm').onsubmit=async e=>{
+      e.preventDefault();const f=Object.fromEntries(new FormData(e.target).entries());const total=totalDaily(f);
+      if(total<=0){alert('الإجمالي صفر. أدخل الوزن والسعر أو العدد والبياعة بشكل صحيح.');return}
+      if(n(f.paid)>total){if(!confirm('المدفوع أكبر من الإجمالي التقديري. هل تريد المتابعة؟'))return}
+      
+      let accountId = '';
+      let clientName = f.name ? f.name.trim() : 'بيع نقدي عام';
+      if(f.name && f.name.trim()){
+        const kind=f.kind==='بيع'?'عميل':'مورد';
+        const a=await ensureAccount(f.name,kind);
+        if(a) accountId = a.id;
+      }
+
+      const rec={
+        ...f,
+        name: clientName,
+        id: f.id||genId(),
+        accountId: accountId,
+        total,
+        paid: n(f.paid),
+        remaining: total-n(f.paid)
+      };
+      
+      await saveCloudRecord('daily', rec);
+      resetForm(e.target,['#dailyFormTitle','تسجيل حركة يومية جديدة'],['#dailySubmit','حفظ الحركة']);
+      previewDaily();
+    };
+  }
+  if($('#dailyCancel')) $('#dailyCancel').onclick=()=>resetForm($('#dailyForm'),['#dailyFormTitle','تسجيل حركة يومية جديدة'],['#dailySubmit','حفظ الحركة']);
+
+  if($('#cashForm')){
+    $('#cashNameInput').addEventListener('blur', e => {
+      const val = e.target.value.trim();
+      if(val){
+        let acc = findAccount(val);
+        if(acc){
+          $('#cashAccount').value = acc.id;
+        }
+      }
+    });
+
+    $('#cashForm').onsubmit=async e=>{
+      e.preventDefault();const f=Object.fromEntries(new FormData(e.target).entries());
+      let accountId = f.accountId;
+      let cashName = f.name ? f.name.trim() : 'حركة نقدية عامة';
+      if(!accountId && f.name && f.name.trim()){
+        let acc = await ensureAccount(f.name, 'عميل');
+        if(acc) accountId = acc.id;
+      }
+      const rec={...f, name: cashName, id: f.id||genId(), accountId, amount: n(f.amount)};
+      
+      await saveCloudRecord('cash', rec);
+      resetForm(e.target,['#cashFormTitle','تسجيل حركة الخزنة (وارد / صادر)'],['#cashSubmit','حفظ حركة الخزنة']);
+    };
+  }
+  if($('#cashCancel')) $('#cashCancel').onclick=()=>resetForm($('#cashForm'),['#cashFormTitle','تسجيل حركة الخزنة (وارد / صادر)'],['#cashSubmit','حفظ حركة الخزنة']);
+
+  if($('#accountForm')){
+    $('#accountForm').onsubmit=async e=>{
+      e.preventDefault();const f=Object.fromEntries(new FormData(e.target).entries());
+      const dup=db.accounts.find(a=>a.name.trim().toLowerCase()===f.name.trim().toLowerCase()&&a.id!==f.id);
+      if(dup){alert('يوجد حساب بنفس الاسم مسجل مسبقاً.');return}
+      const rec={...f,id:f.id||genId(),opening:n(f.opening)};
+      
+      await saveCloudRecord('accounts', rec);
+      resetForm(e.target,['#accountFormTitle','إضافة حساب جديد'],['#accountSubmit','إضافة الحساب']);
+    };
+  }
+  if($('#accountCancel')) $('#accountCancel').onclick=()=>resetForm($('#accountForm'),['#accountFormTitle','إضافة حساب جديد'],['#accountSubmit','إضافة الحساب']);
+
+  function addInvoiceRow(data = {}){
+    const tbody = $('#invoiceItems');
+    if(!tbody) return;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><input type="text" class="item-name" value="${esc(data.name||'')}" style="width:100%; border:none; background:transparent;"></td>
+      <td><input type="number" class="item-price" step=".01" value="${data.price!==undefined?data.price:''}" style="width:70px; border:none; background:transparent; font-weight:bold;"></td>
+      <td><input type="number" class="item-kg" step=".01" value="${data.kg!==undefined?data.kg:''}" style="width:70px; border:none; background:transparent; font-weight:bold;"></td>
+      <td><input type="number" class="item-count" step=".01" value="${data.count!==undefined?data.count:''}" style="width:70px; border:none; background:transparent; font-weight:bold;"></td>
+      <td><input type="number" class="item-line-total" step=".01" readonly value="${data.total!==undefined?data.total:''}" style="width:90px; border:none; background:transparent; font-weight:bold; color:#c0392b;"></td>
+      <td class="no-print" style="text-align:center;"><button type="button" class="danger sm remove-row" style="padding:4px 8px;">✕</button></td>
+    `;
+    tr.querySelectorAll('input').forEach(inp => inp.addEventListener('input', calculateInvoice));
+    tr.querySelector('.remove-row').addEventListener('click', () => {
+      if(tbody.querySelectorAll('tr').length > 1){
+        tr.remove();
+        calculateInvoice();
+      } else {
+        alert('يجب أن تبقى صف واحد على الأقل في الفاتورة');
+      }
+    });
+    tbody.appendChild(tr);
+  }
+
+  if($('#addRowBtn')) $('#addRowBtn').onclick = () => addInvoiceRow();
+
+  function calculateInvoice(){
+    let subtotal = 0;
+    let totalKg = 0;
+    let totalCount = 0;
+
+    $$('#invoiceItems tr').forEach(row => {
+      const price = n(row.querySelector('.item-price').value);
+      const kg = n(row.querySelector('.item-kg').value);
+      const count = n(row.querySelector('.item-count').value);
+      
+      let lineTotal = 0;
+      if (kg > 0 && price > 0) {
+        lineTotal = kg * price;
+      } else if (count > 0 && price > 0) {
+        lineTotal = count * price;
+      } else {
+        lineTotal = kg * price + count * price;
+      }
+      
+      row.querySelector('.item-line-total').value = lineTotal > 0 ? lineTotal.toFixed(2) : '';
+      subtotal += lineTotal;
+      totalKg += kg;
+      totalCount += count;
+    });
+
+    if($('#sumKg')) $('#sumKg').textContent = totalKg.toFixed(2);
+    if($('#sumCount')) $('#sumCount').textContent = totalCount.toFixed(2);
+    if($('#sumSubtotal')) $('#sumSubtotal').textContent = subtotal.toFixed(2) + ' ج.م';
+
+    const comm = n($('#cost_commission')?.value);
+    const unl = n($('#cost_unloading')?.value);
+    const frg = n($('#cost_fridge')?.value);
+    const trn = n($('#cost_transport')?.value);
+    const exp = n($('#cost_expense')?.value);
+    const uni = n($('#cost_union')?.value);
+
+    const totalExpenses = comm + unl + frg + trn + exp + uni;
+    if($('#sumExpenses')) $('#sumExpenses').textContent = totalExpenses.toFixed(2) + ' ج.م';
+
+    const netTotal = subtotal - totalExpenses;
+
+    if($('#displaySubtotal')) $('#displaySubtotal').textContent = subtotal.toFixed(2) + ' ج.م';
+    if($('#displayExpenses')) $('#displayExpenses').textContent = totalExpenses.toFixed(2) + ' ج.م';
+    if($('#displayNetTotal')) $('#displayNetTotal').textContent = netTotal.toFixed(2) + ' ج.م';
+  }
+
+  $$('#invoiceItems, #cost_commission, #cost_unloading, #cost_fridge, #cost_transport, #cost_expense, #cost_union')
+    .forEach(el => el?.addEventListener('input', calculateInvoice));
+
+  if($('#expenseForm')){
+    $('#expenseForm').onsubmit=async e=>{
+      e.preventDefault();
+      const name = e.target.elements['name'].value;
+      if(!name){alert('يجب إدخال اسم العميل أو المطلوب منه');return;}
+      
+      calculateInvoice();
+      const subtotal = n($('#sumSubtotal').textContent);
+      const totalExpenses = n($('#sumExpenses').textContent);
+      const netTotal = subtotal - totalExpenses;
+
+      if(netTotal <= 0 && subtotal <= 0){alert('إجمالي الفاتورة يجب أن يكون أكبر من صفر');return;}
+
+      let items = [];
+      $$('#invoiceItems tr').forEach(row => {
+        items.push({
+          name: row.querySelector('.item-name').value,
+          price: row.querySelector('.item-price').value,
+          kg: row.querySelector('.item-kg').value,
+          count: row.querySelector('.item-count').value,
+          total: row.querySelector('.item-line-total').value
+        });
+      });
+
+      const costs = {
+        commission: n($('#cost_commission').value),
+        unloading: n($('#cost_unloading').value),
+        fridge: n($('#cost_fridge').value),
+        transport: n($('#cost_transport').value),
+        expense: n($('#cost_expense').value),
+        union: n($('#cost_union').value)
+      };
+      
+      const rec={
+        id: e.target.elements.id.value || genId(),
+        date: $('#invoiceDate').value || today(),
+        name: name.trim(),
+        note: 'صافي الفاتورة: ' + netTotal.toFixed(2) + ' ج.م',
+        amount: netTotal,
+        items: items,
+        costs: costs
+      };
+
+      await saveCloudRecord('expenses', rec);
+      alert('تم حفظ الفاتورة بنجاح في السحابة');
+      resetInvoiceForm();
+    };
+  }
+
+  function resetInvoiceForm(){
+    if(!$('#expenseForm')) return;
+    $('#expenseForm').reset();
+    $('#expenseForm').elements.id.value='';
+    if($('#invoiceDate')) $('#invoiceDate').value = today();
+    if($('#invoiceItems')) $('#invoiceItems').innerHTML = '';
+    addInvoiceRow();
+    addInvoiceRow();
+    calculateInvoice();
+    if($('#expenseFormTitle')) $('#expenseFormTitle').textContent='تسجيل فاتورة جديدة';
+    if($('#expenseSubmit')) $('#expenseSubmit').textContent='حفظ الفاتورة';
+  }
+
+  if($('#expenseCancel')) $('#expenseCancel').onclick = resetInvoiceForm;
+  if($('#printInvoiceBtn')) $('#printInvoiceBtn').onclick = () => { calculateInvoice(); window.print(); };
+
+  function renderDaily(){
+    if(!$('#dailyRows')) return;
+    let q=($('#dailySearch')?.value||'').toLowerCase();let from=$('#dailyFrom')?.value||'',to=$('#dailyTo')?.value||'';
+    let rows=db.daily.filter(x=>(x.name+' '+x.item+' '+x.note).toLowerCase().includes(q)&&(!from||x.date>=from)&&(!to||x.date<=to));
+    $('#dailyRows').innerHTML=rows.length?rows.map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.name)}</td><td><span class="badge ${x.kind==='توريد'?'info':'out'}">${x.kind==='بيع'?'بيع':'توريد'}</span></td><td>${esc(x.item)}</td><td>${n(x.count)}</td><td>${n(x.kg)}</td><td>${money(x.price)}</td><td>${money(n(x.count)*n(x.fee))}</td><td>${money(totalDaily(x))}</td><td>${money(x.paid)}</td><td class="${n(x.remaining)>0?'yellow':'green'}">${money(totalDaily(x)-n(x.paid))}</td><td>${buttons('daily',x)}</td></tr>`).join(''):'<tr><td colspan="12" class="empty">لا توجد حركات يومية مسجلة</td></tr>';
+  }
+
+  function updateDailyFilterSummary(){
+    let from=$('#dailyFrom')?.value||'',to=$('#dailyTo')?.value||'',q=($('#dailySearch')?.value||'').toLowerCase();
+    let rows=db.daily.filter(x=>(x.name+' '+x.item+' '+x.note).toLowerCase().includes(q)&&(!from||x.date>=from)&&(!to||x.date<=to));
+    let total=rows.reduce((s,x)=>s+totalDaily(x),0);
+    let old=$('#dailyFilterSummary');if(old)old.remove();
+    let targetTable = $('#dailyRows')?.closest('.tablewrap');
+    if(targetTable){
+      let div=document.createElement('div');div.id='dailyFilterSummary';div.className='summaryline';
+      div.innerHTML=`<div class="pill">عدد الحركات: <b>${rows.length}</b></div><div class="pill">إجمالي النتائج: <b>${money(total)}</b></div>`;
+      targetTable.after(div);
+    }
+  }
+
+  function renderCash(){
+    if(!$('#cashRows')) return;
+    let q=($('#cashSearch')?.value||'').toLowerCase();
+    let rows=db.cash.filter(x=>(x.name+' '+x.note+' '+x.type).toLowerCase().includes(q));
+    $('#cashRows').innerHTML=rows.length?rows.map(x=>`<tr><td>${esc(x.date)}</td><td><span class="badge ${x.type==='صادر'?'out':''}">${esc(x.type)}</span></td><td>${esc(x.name)}</td><td>${esc(accountById(x.accountId)?.name||'—')}</td><td>${esc(x.note||'—')}</td><td><strong>${money(x.amount)}</strong></td><td class="no-print">${buttons('cash',x)}</td></tr>`).join(''):'<tr><td colspan="7" class="empty">لا توجد حركات خزنة مسجلة</td></tr>';
+  }
+
+  function renderAccounts(){
+    if(!$('#accountRows')) return;
+    let q=($('#accountSearch')?.value||'').toLowerCase();
+    let rows=db.accounts.filter(x=>(x.name+' '+x.type+' '+x.page).toLowerCase().includes(q));
+    $('#accountRows').innerHTML=rows.length?rows.map(x=>`<tr>
+      <td>${esc(x.name)}</td>
+      <td>${esc(x.type)}</td>
+      <td><span style="font-weight:bold; color:var(--b);">ص ${esc(x.page||'—')}</span> <button class="secondary sm" style="padding:2px 6px; font-size:10px;" onclick="updatePageNum('${x.id}')">تعديل الصفحة</button></td>
+      <td>${money(x.opening)}</td>
+      <td class="${balance(x)>0?'yellow':balance(x)<0?'red':'green'}">${money(balance(x))}</td>
+      <td>${esc(x.note||'—')}</td>
+      <td><button class="secondary sm" onclick="showNotebookPage('${x.id}')">صفحة الحساب</button> ${buttons('accounts',x)}</td>
+    </tr>`).join(''):'<tr><td colspan="7" class="empty">لا توجد حسابات مسجلة</td></tr>';
+  }
+
+  window.showNotebookPage=aid=>{
+    const a=accountById(aid);if(!a)return;
+    if($('#statementPanel')) $('#statementPanel').classList.remove('hidden');
+    if($('#nbName')) $('#nbName').textContent = 'الاسم: ' + a.name;
+    if($('#nbMeta')) $('#nbMeta').textContent = 'النوع: ' + a.type + ' | البلد/ملاحظات: ' + (a.note || '—') + (a.page ? ' | ص ' + a.page : '');
+    if($('#nbDate')) $('#nbDate').textContent = today();
+    
+    const currentBal = balance(a);
+    if($('#nbBalance')) $('#nbBalance').textContent = money(currentBal);
+    
+    const ms = movements(aid);
+    let out = `<tr><td>—</td><td>رصيد افتتاحي أول المدة</td><td>—</td><td>${n(a.opening)>0 ? money(a.opening) : '—'}</td><td>رصيد بداية الحساب</td></tr>`;
+    
+    ms.forEach(m => {
+      let amtDisplay = m.add ? money(m.add) : (m.sub ? '(' + money(m.sub) + ')' : '0.00');
+      out += `<tr>
+        <td>${esc(m.date)}</td>
+        <td><strong>${esc(m.label)}</strong></td>
+        <td>${n(m.count) || '—'}</td>
+        <td><span style="${m.add?'color:#047857;font-weight:bold;':'color:#991b1b;font-weight:bold;'}">${amtDisplay}</span></td>
+        <td>${esc(m.note || '—')}</td>
+      </tr>`;
+    });
+    
+    if($('#notebookRows')) $('#notebookRows').innerHTML = out;
+    $('#statementPanel')?.scrollIntoView({behavior:'smooth'});
+  };
+
+  if($('#closeStatement')) $('#closeStatement').onclick=()=>$('#statementPanel').classList.add('hidden');
+
+  function renderExpenses(){
+    if(!$('#expenseRows')) return;
+    const rows=db.expenses;
+    $('#expenseRows').innerHTML=rows.length?rows.map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.name)}</td><td>${esc(x.note||'—')}</td><td><strong>${money(x.amount)}</strong></td><td>${buttons('expenses',x)}</td></tr>`).join(''):'<tr><td colspan="5" class="empty">لا توجد فواتير مسجلة</td></tr>';
+  }
+
+  function renderHome(){
+    if(!$('#cashBal')) return;
+    const sales=db.daily.filter(x=>x.kind==='بيع').reduce((s,x)=>s+totalDaily(x),0);
+    const recv=db.accounts.filter(x=>x.type==='عميل').reduce((s,a)=>s+balance(a),0);
+    const pay=db.accounts.filter(x=>x.type==='مورد').reduce((s,a)=>s+Math.max(0,balance(a)),0);
+    
+    $('#cashBal').textContent=money(cashBalance());
+    if($('#sales')) $('#sales').textContent=money(sales);
+    if($('#receivables')) $('#receivables').textContent=money(recv);
+    if($('#payables')) $('#payables').textContent=money(pay);
+    
+    const dailyIn=db.daily.filter(x=>x.kind==='بيع').reduce((s,x)=>s+n(x.paid),0);
+    const dailyOut=db.daily.filter(x=>x.kind==='توريد').reduce((s,x)=>s+n(x.paid),0);
+    const cashIn=db.cash.filter(x=>x.type==='وارد').reduce((s,x)=>s+n(x.amount),0);
+    const cashOut=db.cash.filter(x=>x.type==='صادر').reduce((s,x)=>s+n(x.amount),0);
+    const exp=db.expenses.reduce((s,x)=>s+n(x.amount),0);
+    
+    if($('#cashBreakdown')) $('#cashBreakdown').innerHTML=[['مدفوعات بيع داخلة',dailyIn],['مدفوعات توريد خارجة',dailyOut],['وارد خزنة',cashIn],['صادر خزنة',cashOut],['إجمالي الفواتير الصافية',exp]].map(([k,v])=>`<div class="pill">${k}: <b>${money(v)}</b></div>`).join('');
+    
+    let all=[
+      ...db.daily.map(x=>({date:x.date,book:'اليومية',name:x.name+' — '+x.item,amount:totalDaily(x)})),
+      ...db.cash.map(x=>({date:x.date,book:x.type,name:x.name,amount:x.amount})),
+      ...db.expenses.map(x=>({date:x.date,book:'فاتورة',name:x.name+' — صافي: '+money(x.amount),amount:x.amount}))
+    ].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,8);
+    
+    if($('#recent')) $('#recent').innerHTML=all.length?all.map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.book)}</td><td>${esc(x.name||'—')}</td><td>${money(x.amount)}</td></tr>`).join(''):'<tr><td colspan="4" class="empty">لا توجد حركات مسجلة بعد</td></tr>';
+  }
+
+  function renderCounts(){
+    if($('#recordCounts')) $('#recordCounts').innerHTML=[['حركات اليومية',db.daily.length],['حركات الخزنة',db.cash.length],['الحسابات',db.accounts.length],['الفواتير',db.expenses.length],['التسويات',db.adjustments.length]].map(([k,v])=>`<div class="pill">${k}: <b>${v}</b></div>`).join('');
+  }
+
+  function render(){
+    setOptions();
+    renderDaily();
+    updateDailyFilterSummary();
+    renderCash();
+    renderAccounts();
+    renderExpenses();
+    renderHome();
+    renderCounts();
+    updateLockUI();
+  }
+
+  ['dailySearch','cashSearch','accountSearch'].forEach(k=>{
+    const el = $('#'+k);
+    if(el) el.addEventListener('input',()=>{
+      if(k==='dailySearch'){renderDaily();updateDailyFilterSummary();}
+      else if(k==='cashSearch') renderCash();
+      else if(k==='accountSearch') renderAccounts();
+    });
+  });
+
+  ['dailyFrom','dailyTo'].forEach(k=>{
+    const el = $('#'+k);
+    if(el) el.addEventListener('change',()=>{renderDaily();updateDailyFilterSummary()});
+  });
+
+  if($('#dailyFilterReset')) $('#dailyFilterReset').onclick=()=>{
+    if($('#dailySearch')) $('#dailySearch').value='';
+    if($('#dailyFrom')) $('#dailyFrom').value='';
+    if($('#dailyTo')) $('#dailyTo').value='';
+    renderDaily();
+    updateDailyFilterSummary();
+  };
+
+  if($('#printDaily')) $('#printDaily').onclick=()=>{go('daily');window.print()};
+  if($('#printCash')) $('#printCash').onclick=()=>{go('cash');window.print()};
+  if($('#printAccounts')) $('#printAccounts').onclick=()=>{go('accounts');window.print()};
+  if($('#printStatement')) $('#printStatement').onclick=()=>window.print();
+
+  function csv(name,rows){
+    const content='\ufeff'+rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\r\n');
+    const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type:'text/csv;charset=utf-8;'}));
+    a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  }
+  if($('#dailyCSV')) $('#dailyCSV').onclick=()=>csv('دفتر-اليومية.csv',[['التاريخ','الاسم','النوع','الصنف','العدد','الوزن','السعر','البياعة','الإجمالي','المدفوع','المتبقي'],...db.daily.map(x=>[x.date,x.name,x.kind,x.item,x.count,x.kg,x.price,n(x.count)*n(x.fee),totalDaily(x),x.paid,totalDaily(x)-n(x.paid)])]);
+  if($('#cashCSV')) $('#cashCSV').onclick=()=>csv('الصادر-والوارد.csv',[['التاريخ','النوع','الاسم','الحساب','البيان','المبلغ'],...db.cash.map(x=>[x.date,x.type,x.name,accountById(x.accountId)?.name||'',x.note,x.amount])]);
+  if($('#accountCSV')) $('#accountCSV').onclick=()=>csv('الحسابات.csv',[['الاسم','النوع','الصفحة','الافتتاحي','الحالي','ملاحظات'],...db.accounts.map(x=>[x.name,x.type,x.page,x.opening,balance(x),x.note])]);
+  if($('#expenseCSV')) $('#expenseCSV').onclick=()=>csv('الفواتير.csv',[['التاريخ','الاسم','البيان','المبلغ الصافي'],...db.expenses.map(x=>[x.date,x.name,x.note,x.amount])]);
+
+  if($('#backupExport')) $('#backupExport').onclick=()=>{
+    const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(db,null,2)],{type:'application/json'}));
+    a.download='SouqDaftar-cloud-backup-'+today()+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  };
+
+  if($('#clearAll')) $('#clearAll').onclick=async()=>{
+    if(!verifyLock()) return;
+    if(confirm('تحذير: سيتم مسح كافة البيانات من السحابة نهائياً! هل أنت متأكد؟')){
+      try{
+        for(let col of ['daily','cash','accounts','expenses','adjustments']){
+          const snap = await getDocs(collection(dbFire, col));
+          for(let d of snap.docs){
+            await deleteDoc(doc(dbFire, col, d.id));
+          }
+        }
+        await loadCloudData();
+        alert('تم مسح كافة البيانات السحابية بنجاح.');
+      }catch(e){
+        alert('حدث خطأ أثناء مسح البيانات.');
+      }
+    }
+  };
+
+  setDates();
+  addInvoiceRow();
+  addInvoiceRow();
+  loadCloudData(); // جلب البيانات وسحبها من سحابة Firebase عند فتح الصفحة
+</script>
+</body>
+</html>
